@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 import uuid
 
@@ -47,3 +47,15 @@ class BaseUserOut(BaseUser):
 
     class Config:
         from_attributes = True
+
+
+class BaseConfirmEmail(BaseProperties):
+    user_id: UUID4
+    email: EmailStr
+    time: timedelta
+
+
+class BaseConfirmedEmail(BaseProperties):
+    user_id: UUID4
+    email: EmailStr
+    is_confirmed: bool

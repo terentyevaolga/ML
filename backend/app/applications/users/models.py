@@ -18,6 +18,7 @@ class User(BaseModel):
     first_name = fields.CharField(max_length=64)
     second_name = fields.CharField(max_length=64)
     is_admin = fields.BooleanField(default=False)
+    confirmed_email = fields.BooleanField(default=False)
 
     @classmethod
     async def get_by_email(cls, email: str) -> Optional["User"]:
