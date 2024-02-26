@@ -1,6 +1,7 @@
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 
 const linksMaterial = [
     { name: 'Лекции', link: '/lectures' },
@@ -14,11 +15,28 @@ export function SideMenu() {
     const [auth, setAuth] = useState('signIn');
     const [token, setToken] = useState('');
     const router = useRouter();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [type, setType] = useState('signIn');
 
     useEffect(() => {
         setToken(localStorage.getItem('token'));
         if (token) setAuth('account');
     }, []);
+
+    const [name, setName] = useState('');
+    const [mail, setMail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [code, setCode] = useState('');
+
+    function signIn() {
+        console.log(mail, password);
+    };
+
+    function signUp() {
+        console.log(name, mail, password, passwordConfirm);
+        setType('code');
+    }
 
     return <div className={styles.container} >
         <p className={styles.logo}>Лого</p>
@@ -46,7 +64,7 @@ export function SideMenu() {
                     </svg>
                     <p className={styles.account_button} >Личный кабинет</p>
                 </div>
-                : auth === 'signIn' && <div className={styles.signIn}>
+                : auth === 'signIn' && <div className={styles.signIn} onClick={() => { setType('signIn'); onOpen() }} >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.75 0.25C2.67893 0.25 1 1.92893 1 4V16C1 18.0711 2.67893 19.75 4.75 19.75H10.75C12.8211 19.75 14.5 18.0711 14.5 16V15C14.5 14.5858 14.1642 14.25 13.75 14.25C13.3358 14.25 13 14.5858 13 15V16C13 17.2426 11.9926 18.25 10.75 18.25H4.75C3.50736 18.25 2.5 17.2426 2.5 16V4C2.5 2.75736 3.50736 1.75 4.75 1.75H10.75C11.9926 1.75 13 2.75736 13 4V5C13 5.41421 13.3358 5.75 13.75 5.75C14.1642 5.75 14.5 5.41421 14.5 5V4C14.5 1.92893 12.8211 0.25 10.75 0.25H4.75ZM9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967C9.48744 6.17678 9.01256 6.17678 8.71967 6.46967L5.71967 9.46967C5.42678 9.76256 5.42678 10.2374 5.71967 10.5303L8.71967 13.5303C9.01256 13.8232 9.48744 13.8232 9.78033 13.5303C10.0732 13.2374 10.0732 12.7626 9.78033 12.4697L8.06066 10.75H18.25C18.6642 10.75 19 10.4142 19 10C19 9.58579 18.6642 9.25 18.25 9.25H8.06066L9.78033 7.53033Z" fill="#000B26" fill-opacity="0.72" />
                     </svg>
@@ -54,5 +72,75 @@ export function SideMenu() {
                 </div>
             }
         </div>
-    </div>
+        <Modal isOpen={isOpen} onClose={onClose} autoFocus={false} isCentered>
+            <ModalOverlay />
+            <ModalContent bg='none' >
+                <ModalBody>
+                    {type === 'signIn'
+                        ? <div className={styles.modalSignIn}>
+                            <div className={styles.modal_headerBlock}>
+                                <p className={styles.modal_title} >Вход</p>
+                                <div onClick={onClose} className={styles.modal_close} >
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M24.7071 8.70711C25.0976 8.31658 25.0976 7.68342 24.7071 7.29289C24.3166 6.90237 23.6834 6.90237 23.2929 7.29289L16 14.5858L8.70711 7.29289C8.31658 6.90237 7.68342 6.90237 7.29289 7.29289C6.90237 7.68342 6.90237 8.31658 7.29289 8.70711L14.5858 16L7.29289 23.2929C6.90237 23.6834 6.90237 24.3166 7.29289 24.7071C7.68342 25.0976 8.31658 25.0976 8.70711 24.7071L16 17.4142L23.2929 24.7071C23.6834 25.0976 24.3166 25.0976 24.7071 24.7071C25.0976 24.3166 25.0976 23.6834 24.7071 23.2929L17.4142 16L24.7071 8.70711Z" fill="#000B26" fill-opacity="0.72" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className={styles.modal_body}>
+                                <div className={styles.modal_inputBlock}>
+                                    <input placeholder="Почта" onChange={(e) => setMail(e.target.value)} className={styles.modal_input} />
+                                    <input placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
+                                </div>
+                                <div className={styles.modal_buttonBlock}>
+                                    <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signIn} >Войти</Button>
+                                    <p className={styles.modal_registerText}>Еще нет аккаунта? <span className={styles.modal_signUp} onClick={() => setType('signUp')} >Зарегистрироваться</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        : type === 'signUp'
+                            ? <div className={styles.modalSignUp}>
+                                <div className={styles.modal_headerBlock}>
+                                    <p className={styles.modal_title} >Регистрация</p>
+                                    <div onClick={onClose} className={styles.modal_close} >
+                                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24.7071 8.70711C25.0976 8.31658 25.0976 7.68342 24.7071 7.29289C24.3166 6.90237 23.6834 6.90237 23.2929 7.29289L16 14.5858L8.70711 7.29289C8.31658 6.90237 7.68342 6.90237 7.29289 7.29289C6.90237 7.68342 6.90237 8.31658 7.29289 8.70711L14.5858 16L7.29289 23.2929C6.90237 23.6834 6.90237 24.3166 7.29289 24.7071C7.68342 25.0976 8.31658 25.0976 8.70711 24.7071L16 17.4142L23.2929 24.7071C23.6834 25.0976 24.3166 25.0976 24.7071 24.7071C25.0976 24.3166 25.0976 23.6834 24.7071 23.2929L17.4142 16L24.7071 8.70711Z" fill="#000B26" fill-opacity="0.72" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div className={styles.modal_body}>
+                                    <div className={styles.modal_inputBlock}>
+                                        <input placeholder="Фамилия и Имя" onChange={(e) => setName(e.target.value)} className={styles.modal_input} />
+                                        <input placeholder="Почта" onChange={(e) => setMail(e.target.value)} className={styles.modal_input} />
+                                        <input placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
+                                        <input placeholder="Подтверждения пароля" onChange={(e) => setPasswordConfirm(e.target.value)} className={styles.modal_input} />
+                                    </div>
+                                    <div className={styles.modal_buttonBlock}>
+                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signUp} >Зарегистрироваться</Button>
+                                        <p className={styles.modal_registerText}>Уже есть аккаунт? <span className={styles.modal_signUp} onClick={() => setType('signIn')} >Войти</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            : <div className={styles.modalCode}>
+                                <div className={styles.modal_headerBlock}>
+                                    <p className={styles.modal_title} >Ввести код</p>
+                                    <div onClick={onClose} className={styles.modal_close} >
+                                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24.7071 8.70711C25.0976 8.31658 25.0976 7.68342 24.7071 7.29289C24.3166 6.90237 23.6834 6.90237 23.2929 7.29289L16 14.5858L8.70711 7.29289C8.31658 6.90237 7.68342 6.90237 7.29289 7.29289C6.90237 7.68342 6.90237 8.31658 7.29289 8.70711L14.5858 16L7.29289 23.2929C6.90237 23.6834 6.90237 24.3166 7.29289 24.7071C7.68342 25.0976 8.31658 25.0976 8.70711 24.7071L16 17.4142L23.2929 24.7071C23.6834 25.0976 24.3166 25.0976 24.7071 24.7071C25.0976 24.3166 25.0976 23.6834 24.7071 23.2929L17.4142 16L24.7071 8.70711Z" fill="#000B26" fill-opacity="0.72" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div className={styles.modal_body}>
+                                    <div className={styles.modal_inputBlock}>
+                                        <p className={styles.modal_registerText}>Введите код отправленный вам на почту<br /><span className={styles.modal_signUp}>{mail}</span></p>
+                                        <input value={code} placeholder="Код" onChange={(e) => setCode(e.target.value)} className={styles.modal_input} />
+                                    </div>
+                                    <div className={styles.modal_buttonBlock}>
+                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signIn} >Отправить</Button>
+                                    </div>
+                                </div>
+                            </div>}
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+    </div >
 }
