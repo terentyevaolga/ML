@@ -1,0 +1,38 @@
+version: '3.9'
+name: 'medicine'
+
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8083:81"
+    links:
+      - redis
+      - postgres
+    depends_on:
+      - redis
+      - postgres
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    expose:
+     - 6390
+    volumes:
+      - "redis:/data/cache"
+  postgres:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD: 256128
+      - POSTGRES_USER: postgres
+      - POSTGRES_DB: medicine
+    expose:
+      - 5430
+    volumes:
+      - "postgres:/data/db"
+
+volumes:
+  redis:
+  postgres:
+    
