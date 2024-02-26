@@ -1,7 +1,7 @@
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalOverlay, useDisclosure, useToast } from "@chakra-ui/react";
 
 const linksMaterial = [
     { name: 'Лекции', link: '/lectures' },
@@ -15,12 +15,14 @@ export function SideMenu() {
     const [auth, setAuth] = useState('signIn');
     const [token, setToken] = useState('');
     const router = useRouter();
+    const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [type, setType] = useState('signIn');
 
     useEffect(() => {
         setToken(localStorage.getItem('token'));
         if (token) setAuth('account');
+        console.log(router.pathname)
     }, []);
 
     const [name, setName] = useState('');
@@ -29,14 +31,50 @@ export function SideMenu() {
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [code, setCode] = useState('');
 
+    const regexMail = /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i;
+
     function signIn() {
-        console.log(mail, password);
+        if (regexMail.test(mail) && password.length > 0) {
+            router.push('/account');
+        } else {
+            if (!regexMail.test(mail)) toast({
+                title: 'Ошибка', description: "Вы некорректно ввели почту", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+            if (password.length === 0) toast({
+                title: 'Ошибка', description: "Вы некорректно ввели пароль", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+        }
     };
 
     function signUp() {
-        console.log(name, mail, password, passwordConfirm);
-        setType('code');
-    }
+        console.log('здесь')
+        if (regexMail.test(mail) && password.length > 0 && name.length > 0 && password == passwordConfirm) {
+            setType('code');
+        } else {
+            if (!regexMail.test(mail)) toast({
+                title: 'Ошибка', description: "Вы некорректно ввели почту", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+            if (password.length === 0) toast({
+                title: 'Ошибка', description: "Вы некорректно ввели пароль", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+            if (name.length === 0) toast({
+                title: 'Ошибка', description: "Вы некорректно ввели имя", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+            if (password !== passwordConfirm) toast({
+                title: 'Ошибка', description: "Пароли не совпадают", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+        }
+    };
+
+    function codeCheck() {
+        if (code.length === 6) {
+            router.push('/account');
+        } else {
+            if (code.length !== 6) toast({
+                title: 'Ошибка', description: "Код введён неверно", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
+            })
+        }
+    };
 
     return <div className={styles.container} >
         <p className={styles.logo}>Лого</p>
@@ -57,14 +95,14 @@ export function SideMenu() {
             </div>
         </div>
         <div className={styles.authBlock}>
-            {auth === 'account'
+            {router.pathname === '/account'
                 ? <div className={styles.account}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M6.21967 0.46967C6.51256 0.176777 6.98744 0.176777 7.28033 0.46967L13.2803 6.46967C13.5732 6.76256 13.5732 7.23744 13.2803 7.53033L7.28033 13.5303C6.98744 13.8232 6.51256 13.8232 6.21967 13.5303C5.92678 13.2374 5.92678 12.7626 6.21967 12.4697L10.9393 7.75H0.75C0.335786 7.75 0 7.41421 0 7C0 6.58579 0.335786 6.25 0.75 6.25H10.9393L6.21967 1.53033C5.92678 1.23744 5.92678 0.762563 6.21967 0.46967Z" fill="#000B26" fill-opacity="0.72" />
                     </svg>
                     <p className={styles.account_button} >Личный кабинет</p>
                 </div>
-                : auth === 'signIn' && <div className={styles.signIn} onClick={() => { setType('signIn'); onOpen() }} >
+                : router.pathname === '/' && <div className={styles.signIn} onClick={() => { setType('signIn'); onOpen() }} >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.75 0.25C2.67893 0.25 1 1.92893 1 4V16C1 18.0711 2.67893 19.75 4.75 19.75H10.75C12.8211 19.75 14.5 18.0711 14.5 16V15C14.5 14.5858 14.1642 14.25 13.75 14.25C13.3358 14.25 13 14.5858 13 15V16C13 17.2426 11.9926 18.25 10.75 18.25H4.75C3.50736 18.25 2.5 17.2426 2.5 16V4C2.5 2.75736 3.50736 1.75 4.75 1.75H10.75C11.9926 1.75 13 2.75736 13 4V5C13 5.41421 13.3358 5.75 13.75 5.75C14.1642 5.75 14.5 5.41421 14.5 5V4C14.5 1.92893 12.8211 0.25 10.75 0.25H4.75ZM9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967C9.48744 6.17678 9.01256 6.17678 8.71967 6.46967L5.71967 9.46967C5.42678 9.76256 5.42678 10.2374 5.71967 10.5303L8.71967 13.5303C9.01256 13.8232 9.48744 13.8232 9.78033 13.5303C10.0732 13.2374 10.0732 12.7626 9.78033 12.4697L8.06066 10.75H18.25C18.6642 10.75 19 10.4142 19 10C19 9.58579 18.6642 9.25 18.25 9.25H8.06066L9.78033 7.53033Z" fill="#000B26" fill-opacity="0.72" />
                     </svg>
@@ -111,8 +149,8 @@ export function SideMenu() {
                                     <div className={styles.modal_inputBlock}>
                                         <input placeholder="Фамилия и Имя" onChange={(e) => setName(e.target.value)} className={styles.modal_input} />
                                         <input placeholder="Почта" onChange={(e) => setMail(e.target.value)} className={styles.modal_input} />
-                                        <input placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
-                                        <input placeholder="Подтверждения пароля" onChange={(e) => setPasswordConfirm(e.target.value)} className={styles.modal_input} />
+                                        <input placeholder="Пароль" type="password" onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
+                                        <input placeholder="Подтверждения пароля" type="password" onChange={(e) => setPasswordConfirm(e.target.value)} className={styles.modal_input} />
                                     </div>
                                     <div className={styles.modal_buttonBlock}>
                                         <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signUp} >Зарегистрироваться</Button>
@@ -135,7 +173,7 @@ export function SideMenu() {
                                         <input value={code} placeholder="Код" onChange={(e) => setCode(e.target.value)} className={styles.modal_input} />
                                     </div>
                                     <div className={styles.modal_buttonBlock}>
-                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signIn} >Отправить</Button>
+                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={codeCheck} >Отправить</Button>
                                     </div>
                                 </div>
                             </div>}
