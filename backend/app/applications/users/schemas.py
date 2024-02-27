@@ -14,25 +14,19 @@ class BaseProperties(BaseModel):
 class BaseUser(BaseProperties):
     uuid: Optional[UUID4] = None
     email: Optional[EmailStr] = None
-    phone_number: Optional[str] = None
-    first_name: Optional[str] = None
-    second_name: Optional[str] = None
+    fido: Optional[str] = None
 
 
 class BaseUserCreate(BaseProperties):
     email: EmailStr
-    phone_number: Optional[str] = None
-    first_name: str
-    second_name: str
+    fido: str
     password: str
 
     class Config:
         json_schema_extra = {
             "example": {
                 "email": "my_email@email.com",
-                "phone_number": "+79995553322",
-                "first_name": "Name",
-                "second_name": "Surname",
+                "fido": "Name Surname",
                 "password": "qwerty"
             }
         }
@@ -41,9 +35,7 @@ class BaseUserCreate(BaseProperties):
 class BaseUserOut(BaseUser):
     uuid: UUID4
     email: EmailStr
-    phone_number: Optional[str] = None
-    first_name: str
-    second_name: str
+    fido: str
 
     class Config:
         from_attributes = True

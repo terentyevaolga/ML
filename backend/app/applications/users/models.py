@@ -13,10 +13,8 @@ from app.core.base.base_models import BaseModel
 
 class User(BaseModel):
     email = fields.CharField(max_length=255, unique=True)
-    phone_number = fields.CharField(max_length=32, unique=True, null=True)
     password_hash = fields.CharField(max_length=255, null=True)
-    first_name = fields.CharField(max_length=64)
-    second_name = fields.CharField(max_length=64)
+    fido = fields.CharField(max_length=128)
     is_admin = fields.BooleanField(default=False)
     confirmed_email = fields.BooleanField(default=False)
 
