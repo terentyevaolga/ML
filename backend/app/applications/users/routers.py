@@ -16,6 +16,8 @@ from app.applications.users.schemas import (
     BaseConfirmedEmail
 )
 from app.applications.users.utils import send_email_confirmation_letter
+from app.core.auth.routers.login import login_access_token
+from app.core.auth.schemas import JWTToken
 
 from app.redis.database import r
 from app.settings.config import settings
@@ -35,7 +37,7 @@ async def get_user_me(
     return current_user
 
 
-@router.post("/", response_model=BaseUserOut, status_code=201)
+@router.post("/", response_model=JWTToken, status_code=201)
 async def create_user(
     *,
     user_in: BaseUserCreate
@@ -51,7 +53,11 @@ async def create_user(
     db_user = BaseUserCreate(**user_in.model_dump(), hashed_password=hashed_password)
     user = await User.create(db_user)
 
-    return user
+    await send_confirmation_letter(user)
+    access_token = await login_access_token(OAuth2PasswordRequestForm(username=user.email, 
+                                                                        password=user_in.password))
+
+    return access_token
 
 @router.get("/me/confirm", response_model=BaseConfirmEmail, status_code=200)
 async def send_confirmation_letter(

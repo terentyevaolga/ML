@@ -30,7 +30,7 @@ async def send_email_confirmation_letter(to: str, user_id: UUID4):
         conn.set_debuglevel(False)
         conn.login(settings.SMTP_LOGIN, settings.SMTP_PWD)
         try:
-            conn.sendmail(settings.EMAIL, msg.as_string())
+            conn.sendmail(settings.EMAIL, to, msg.as_string())
         finally:
             conn.quit()
 
