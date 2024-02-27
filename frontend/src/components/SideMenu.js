@@ -10,6 +10,8 @@ const linksMaterial = [
     { name: 'Статьи', link: '/articles' }
 ];
 
+const accountPages = ['/cabinet', '/course'];
+
 export function SideMenu() {
 
     const [auth, setAuth] = useState('signIn');
@@ -35,7 +37,7 @@ export function SideMenu() {
 
     function signIn() {
         if (regexMail.test(mail) && password.length > 0) {
-            router.push('/account');
+            router.push('/course');
         } else {
             if (!regexMail.test(mail)) toast({
                 title: 'Ошибка', description: "Вы некорректно ввели почту", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
@@ -68,7 +70,7 @@ export function SideMenu() {
 
     function codeCheck() {
         if (code.length === 6) {
-            router.push('/account');
+            router.push('/course');
         } else {
             if (code.length !== 6) toast({
                 title: 'Ошибка', description: "Код введён неверно", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
@@ -76,31 +78,31 @@ export function SideMenu() {
         }
     };
 
-    return <div className={styles.container} >
+    return <div className={`${styles.container} ${accountPages.includes(router.pathname) && styles.containerLine} `} >
         <p className={styles.logo}>Лого</p>
         <div className={styles.blockMaterial} >
             <div className={styles.cources}>
                 <p className={styles.cources_title}>Курсы</p>
                 <div className={styles.cources_itemList}>
                     {[1, 2, 3, 4, 5].map(x =>
-                        <p key={x} onClick={() => token && router.push(`/cource${x}`)} className={token ? styles.cources_item : styles.cources_itemMainPage}>{x} курс</p>)}
+                        <p key={x} onClick={() => token && router.push(`/ cource${x} `)} className={token ? styles.cources_item : styles.cources_itemMainPage}>{x} курс</p>)}
                 </div>
             </div>
             <div className={styles.cources}>
                 <p className={styles.cources_title}>Учебные материалы</p>
                 <div className={styles.cources_itemList}>
                     {linksMaterial.map(x =>
-                        <p key={x} onClick={() => token && router.push(`/${x.link}`)} className={token ? styles.cources_item : styles.cources_itemMainPage}>{x.name}</p>)}
+                        <p key={x} onClick={() => token && router.push(`/ ${x.link} `)} className={token ? styles.cources_item : styles.cources_itemMainPage}>{x.name}</p>)}
                 </div>
             </div>
         </div>
         <div className={styles.authBlock}>
-            {router.pathname === '/account'
-                ? <div className={styles.account}>
+            {accountPages.includes(router.pathname)
+                ? <div className={styles.account} onClick={() => router.push('/cabinet')} >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M6.21967 0.46967C6.51256 0.176777 6.98744 0.176777 7.28033 0.46967L13.2803 6.46967C13.5732 6.76256 13.5732 7.23744 13.2803 7.53033L7.28033 13.5303C6.98744 13.8232 6.51256 13.8232 6.21967 13.5303C5.92678 13.2374 5.92678 12.7626 6.21967 12.4697L10.9393 7.75H0.75C0.335786 7.75 0 7.41421 0 7C0 6.58579 0.335786 6.25 0.75 6.25H10.9393L6.21967 1.53033C5.92678 1.23744 5.92678 0.762563 6.21967 0.46967Z" fill="#000B26" fill-opacity="0.72" />
                     </svg>
-                    <p className={styles.account_button} >Личный кабинет</p>
+                    <p className={styles.account_button} style={{ color: router.pathname === '/cabinet' && '#07C88E' }} >Личный кабинет</p>
                 </div>
                 : router.pathname === '/' && <div className={styles.signIn} onClick={() => { setType('signIn'); onOpen() }} >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

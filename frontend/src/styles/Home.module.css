@@ -11,6 +11,10 @@
   z-index: 100;
 }
 
+.containerLine {
+  border-right: solid 1px #000000B2;
+}
+
 .logo {
   font-size: 24px;
   font-weight: 400;
