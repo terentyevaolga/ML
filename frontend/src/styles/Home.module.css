@@ -24,6 +24,10 @@
   color: #000B26A3;
 }
 
+.logo:hover {
+  cursor: pointer;
+}
+
 .blockMaterial {
   display: flex;
   flex-direction: column;
@@ -43,8 +47,12 @@
   letter-spacing: -0.15000000596046448px;
   text-align: left;
   color: #000B26A3;
-
 }
+
+.greenUnderline {
+  text-decoration: underline #07C88E;
+}
+
 
 .cources_itemList {
   display: flex;
@@ -62,6 +70,10 @@
   color: #000B26A3;
   transition: all 0.5s;
   width: max-content;
+}
+
+.greenText {
+  color: #07C88E;
 }
 
 .cources_itemMainPage {

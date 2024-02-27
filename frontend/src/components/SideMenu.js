@@ -2,6 +2,8 @@ import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Button, Modal, ModalBody, ModalContent, ModalOverlay, useDisclosure, useToast } from "@chakra-ui/react";
+import axios from "axios";
+import API_BASE_URL from '../../apiConfig.js';
 
 const linksMaterial = [
     { name: 'Лекции', link: '/lectures' },
@@ -14,18 +16,24 @@ const accountPages = ['/cabinet', '/course'];
 
 export function SideMenu() {
 
-    const [auth, setAuth] = useState('signIn');
     const [token, setToken] = useState('');
     const router = useRouter();
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [type, setType] = useState('signIn');
+    const [loading, setLoading] = useState(false);
+
+    const { number } = router.query;
 
     useEffect(() => {
         setToken(localStorage.getItem('token'));
-        if (token) setAuth('account');
-        console.log(router.pathname)
+        load();
     }, []);
+
+    function load() {
+        if (router.pathname === '/') return ""
+        else if (!localStorage.getItem('token')) router.push('/');
+    }
 
     const [name, setName] = useState('');
     const [mail, setMail] = useState('');
@@ -35,23 +43,46 @@ export function SideMenu() {
 
     const regexMail = /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i;
 
+    let params = new URLSearchParams();
+    params.append('username', mail);
+    params.append('password', password);
+
     function signIn() {
+        setLoading(true);
         if (regexMail.test(mail) && password.length > 0) {
-            router.push('/course');
+            axios.post(`${API_BASE_URL}auth/login/access-token`, params)
+                .then((res) => {
+                    console.log(res.data);
+                    localStorage.setItem('token', res.data.access_token);
+                    router.push('/course?number=1');
+                })
+                .catch((e) => {
+                    console.log(e);
+                })
         } else {
             if (!regexMail.test(mail)) toast({
                 title: 'Ошибка', description: "Вы некорректно ввели почту", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
-            })
+            });
             if (password.length === 0) toast({
                 title: 'Ошибка', description: "Вы некорректно ввели пароль", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
-            })
+            });
+            setLoading(false);
         }
     };
 
     function signUp() {
-        console.log('здесь')
+        setLoading(true);
         if (regexMail.test(mail) && password.length > 0 && name.length > 0 && password == passwordConfirm) {
-            setType('code');
+            axios.post(`${API_BASE_URL}users/`, { email: mail, password, fido: name })
+                .then((res) => {
+                    console.log(res.data);
+                    localStorage.setItem('token', res.data.access_token);
+                    setType('code');
+                })
+                .catch((e) => {
+                    console.log(e);
+                })
+            setLoading(false);
         } else {
             if (!regexMail.test(mail)) toast({
                 title: 'Ошибка', description: "Вы некорректно ввели почту", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
@@ -65,12 +96,22 @@ export function SideMenu() {
             if (password !== passwordConfirm) toast({
                 title: 'Ошибка', description: "Пароли не совпадают", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
             })
+            setLoading(false);
         }
     };
 
     function codeCheck() {
+        setLoading(true);
         if (code.length === 6) {
-            router.push('/course');
+            axios.post(`${API_BASE_URL}users/me/confirm?code=${code}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+                .then((res) => {
+                    console.log(res.data);
+                    router.push('/course?number=1');
+                })
         } else {
             if (code.length !== 6) toast({
                 title: 'Ошибка', description: "Код введён неверно", status: 'error', duration: 4000, isClosable: true, position: 'bottom-right'
@@ -79,13 +120,13 @@ export function SideMenu() {
     };
 
     return <div className={`${styles.container} ${accountPages.includes(router.pathname) && styles.containerLine} `} >
-        <p className={styles.logo}>Лого</p>
+        <p className={styles.logo} onClick={() => router.push('/')} >Лого</p>
         <div className={styles.blockMaterial} >
             <div className={styles.cources}>
-                <p className={styles.cources_title}>Курсы</p>
+                <p className={`${styles.cources_title} ${router.pathname === '/course' && styles.greenUnderline}`}>Курсы</p>
                 <div className={styles.cources_itemList}>
                     {[1, 2, 3, 4, 5].map(x =>
-                        <p key={x} onClick={() => token && router.push(`/ cource${x} `)} className={token ? styles.cources_item : styles.cources_itemMainPage}>{x} курс</p>)}
+                        <p key={x} onClick={() => token && router.push(`/course?number=${x}`)} className={`${token ? styles.cources_item : styles.cources_itemMainPage} ${x == number && styles.greenText}`}>{x} курс</p>)}
                 </div>
             </div>
             <div className={styles.cources}>
@@ -129,10 +170,10 @@ export function SideMenu() {
                             <div className={styles.modal_body}>
                                 <div className={styles.modal_inputBlock}>
                                     <input placeholder="Почта" onChange={(e) => setMail(e.target.value)} className={styles.modal_input} />
-                                    <input placeholder="Пароль" onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
+                                    <input placeholder="Пароль" type="password" onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
                                 </div>
                                 <div className={styles.modal_buttonBlock}>
-                                    <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signIn} >Войти</Button>
+                                    <Button isLoading={loading} backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signIn} >Войти</Button>
                                     <p className={styles.modal_registerText}>Еще нет аккаунта? <span className={styles.modal_signUp} onClick={() => setType('signUp')} >Зарегистрироваться</span></p>
                                 </div>
                             </div>
@@ -155,7 +196,7 @@ export function SideMenu() {
                                         <input placeholder="Подтверждения пароля" type="password" onChange={(e) => setPasswordConfirm(e.target.value)} className={styles.modal_input} />
                                     </div>
                                     <div className={styles.modal_buttonBlock}>
-                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={signUp} >Зарегистрироваться</Button>
+                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' isLoading={loading} color='white' _hover={{}} fontWeight={500} onClick={signUp} >Зарегистрироваться</Button>
                                         <p className={styles.modal_registerText}>Уже есть аккаунт? <span className={styles.modal_signUp} onClick={() => setType('signIn')} >Войти</span></p>
                                     </div>
                                 </div>
@@ -175,7 +216,7 @@ export function SideMenu() {
                                         <input value={code} placeholder="Код" onChange={(e) => setCode(e.target.value)} className={styles.modal_input} />
                                     </div>
                                     <div className={styles.modal_buttonBlock}>
-                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} onClick={codeCheck} >Отправить</Button>
+                                        <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' isLoading={loading} _hover={{}} fontWeight={500} onClick={codeCheck} >Отправить</Button>
                                     </div>
                                 </div>
                             </div>}

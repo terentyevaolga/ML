@@ -1,0 +1,107 @@
+.main {
+    width: calc(100% - 351px);
+    margin-left: 351px;
+    padding: 100px 40px 60px 91px;
+    display: flex;
+    flex-direction: column;
+    gap: 66px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.15000000596046448px;
+    text-align: left;
+    color: #000B26A3;
+}
+
+.menuButton {
+    width: 412px;
+    height: 60px;
+    background-color: white;
+    border: solid 1px #000B2629;
+    border-radius: 8px;
+    text-align: left;
+    padding: 0 16px 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.menuButtonText {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #000B2666;
+}
+
+.menuButtonBlock {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.menuList {
+    width: 412px;
+    margin-top: -8px;
+}
+
+.menuItem {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: #000B26B8;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 84px;
+}
+
+.navigationBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.navigationTitle {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.15000000596046448px;
+    text-align: left;
+    color: #000B26A3;
+}
+
+.navigationItem {
+    height: 40px;
+    border-radius: 60px;
+    padding: 0px 20px;
+    color: #000B26CC;
+    background-color: #3E507214;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.navigationItem:hover {
+    cursor: pointer;
+}
+
+.navigaton {
+    display: flex;
+    flex-direction: row;
+    gap: 17px;
+}
+
+.navigationItemCheck {
+    background-color: #060E21E0;
+    color: white;
+}
