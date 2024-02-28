@@ -189,3 +189,12 @@
     justify-content: center;
     align-items: center;
 }
+
+.materialText {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.15000000596046448px;
+    text-align: left;
+    color: #000B26A3;
+}
