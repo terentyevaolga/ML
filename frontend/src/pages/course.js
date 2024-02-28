@@ -3,7 +3,7 @@ import styles from '../styles/Course.module.css';
 import { GlobalSearch, SideMenu } from "../components";
 import '@fontsource-variable/inter';
 import { useRouter } from "next/router";
-import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem, SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 
 const subjects = ['Анатомия', 'Физиология', 'Биология', 'Биоэтика', 'Гистология', 'Латынь'];
@@ -51,8 +51,43 @@ export default function Course() {
               </div>)}
             </div>
           </div>
-          <div className={styles.info} >  
-
+          <div className={styles.info}>
+            <div className={styles.testBlock}>
+              <p className={styles.testTitle}>Проверьте свои знания по выбранной дисциплине!</p>
+              <button className={styles.testButton}>Пройдите тест</button>
+            </div>
+            <div className={styles.materialsBlock}>
+              <div className={styles.materialBlock}>
+                <p className={styles.materialSubtitle}>Видеолекции</p>
+                <div className={styles.materialContainer}>
+                  <SimpleGrid columns={3} gap='30px'>
+                    {[1, 2, 3].map(x => <div key={x} className={styles.materialBox} >
+                      <p className={styles.materialText}>Видео {x}</p>
+                    </div>)}
+                  </SimpleGrid>
+                </div>
+              </div>
+              <div className={styles.materialBlock}>
+                <p className={styles.materialSubtitle}>Методические материалы</p>
+                <div className={styles.materialContainer}>
+                  <SimpleGrid columns={3} gap='30px'>
+                    {[1, 2, 3].map(x => <div key={x} className={styles.materialBoxMetod} >
+                      <p className={styles.materialText}>Методичка {x}</p>
+                    </div>)}
+                  </SimpleGrid>
+                </div>
+              </div>
+              <div className={styles.materialBlock}>
+                <p className={styles.materialSubtitle}>Конспекты</p>
+                <div className={styles.materialContainer}>
+                  <SimpleGrid columns={3} gap='30px'>
+                    {[1, 2, 3].map(x => <div key={x} className={styles.materialBoxMetod} >
+                      <p className={styles.materialText}>Конспект {x}</p>
+                    </div>)}
+                  </SimpleGrid>
+                </div>
+              </div>
+            </div>
           </div>
         </div>}
       </div>

@@ -105,3 +105,87 @@
     background-color: #060E21E0;
     color: white;
 }
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 57px;
+}
+
+.testBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 27px;
+}
+
+.testTitle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.15000000596046448px;
+    text-align: left;
+    color: #000B26A3;
+}
+
+.testButton {
+    width: 210px;
+    height: 43px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #07C88E;
+    color: #fff;    
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: -0.25px;
+    text-align: left;
+}
+
+.materialsBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 78px;
+}
+
+.materialBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 21px;
+    overflow: hidden;
+}
+
+.materialSubtitle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.15000000596046448px;
+    text-align: left;
+    color: #000B26A3;
+}
+
+.materialContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 52px;
+    width: 100%;
+}
+
+.materialBox {
+    width: 279px;
+    height: 163px;
+    border: solid 1px #1222581F;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.materialBoxMetod {
+    width: 232px;
+    height: 267px;
+    border: solid 1px #1222581F;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
