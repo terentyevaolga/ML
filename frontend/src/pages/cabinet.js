@@ -2,36 +2,37 @@ import Head from "next/head";
 import styles from '../styles/Account.module.css';
 import { GlobalSearch, SideMenu } from "../components";
 import '@fontsource-variable/inter';
-import { SimpleGrid, Modal, ModalBody, ModalContent, ModalOverlay, useDisclosure, useToast, Button } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from '../../apiConfig.js';
+import { useRouter } from "next/router";
 
 const dataTest = [
   { date: '22.01.24', test: 'Миология', result: '5/10' },
   { date: '15.02.24', test: 'Кардиология', result: '9/10' }
 ];
 
-export default function Course() {
+export default function Cabinet() {
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
   const [data, setData] = useState([]);
 
   useEffect(() => {
     load();
   });
 
-  function load(){
+  function load() {
     axios.get(`${API_BASE_URL}users/me`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
-    .then((res) => {
-      console.log(res.data);
-      setData(res.data);
-    })
-  }
+      .then((res) => {
+        setData(res.data);
+      })
+  };
+
 
   return <>
     <Head>
@@ -52,7 +53,7 @@ export default function Course() {
                 <p className={styles.name}>{data.fido}</p>
                 <p className={styles.phone}>{data.email}</p>
               </div>
-              <button className={styles.edit} onClick={onOpen}>Редактировать</button>
+              <button className={styles.edit} onClick={() => router.push('/edit')}>Редактировать</button>
             </div>
             <div className={styles.data_infoTests}>
               <p className={styles.historyTestsTitle}>История тестирования</p>
@@ -96,32 +97,6 @@ export default function Course() {
           </div>
         </div>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} autoFocus={false} isCentered>
-        <ModalOverlay />
-        <ModalContent bg='none' >
-          <ModalBody>
-            <div className={styles.modal}>
-              <div className={styles.modal_headerBlock}>
-                <p className={styles.modal_title}>Мои данные</p>
-                <div onClick={onClose} className={styles.modal_close} >
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.7071 8.70711C25.0976 8.31658 25.0976 7.68342 24.7071 7.29289C24.3166 6.90237 23.6834 6.90237 23.2929 7.29289L16 14.5858L8.70711 7.29289C8.31658 6.90237 7.68342 6.90237 7.29289 7.29289C6.90237 7.68342 6.90237 8.31658 7.29289 8.70711L14.5858 16L7.29289 23.2929C6.90237 23.6834 6.90237 24.3166 7.29289 24.7071C7.68342 25.0976 8.31658 25.0976 8.70711 24.7071L16 17.4142L23.2929 24.7071C23.6834 25.0976 24.3166 25.0976 24.7071 24.7071C25.0976 24.3166 25.0976 23.6834 24.7071 23.2929L17.4142 16L24.7071 8.70711Z" fill="#000B26" fill-opacity="0.72" />
-                  </svg>
-                </div>
-              </div>
-              <div className={styles.modal_body}>
-                <div className={styles.modal_inputBlock}>
-                  <input placeholder="Имя" defaultValue={data.fido} onChange={(e) => setMail(e.target.value)} className={styles.modal_input} />
-                  <input placeholder="Почта" defaultValue={data.email} onChange={(e) => setPassword(e.target.value)} className={styles.modal_input} />
-                </div>
-                <div className={styles.modal_buttonBlock}>
-                  <Button backgroundColor='#07C88E' borderRadius='8px' height='56px' width='100%' color='white' _hover={{}} fontWeight={500} >Обновить</Button>
-                </div>
-              </div>
-            </div>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </main>
   </>
 }

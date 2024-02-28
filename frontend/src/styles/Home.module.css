@@ -22,10 +22,7 @@
   letter-spacing: -0.15000000596046448px;
   text-align: left;
   color: #000B26A3;
-}
-
-.logo:hover {
-  cursor: pointer;
+  user-select: none;
 }
 
 .blockMaterial {
@@ -238,4 +235,18 @@
   display: flex;
   flex-direction: column;
   gap: 48px;
+}
+
+.logOutBlock {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: absolute;
+  bottom: 20px;
+  left: 130px;
+  align-items: center;
+}
+
+.logOutIcon {
+  transform: rotate(180deg);
 }

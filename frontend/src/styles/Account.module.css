@@ -239,3 +239,31 @@
     border-radius: 8px;
     padding: 20px 16px;
 }
+
+.editBlock {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    gap: 10px;
+}
+
+.editBlocks {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.titleEdit {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: -0.15000000596046448px;
+    text-align: left;
+    color: #000B26A3;    
+}
+
+.editTwoBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
